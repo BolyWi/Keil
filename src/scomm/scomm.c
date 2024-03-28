@@ -1,4 +1,6 @@
 #include "scomm.h"
+
+#ifdef TEST_02
 // 初始化串口
 void uart_config()
 {
@@ -27,3 +29,4 @@ void sendStr(char* str)
     }
     ES=1;
 }
+#endif

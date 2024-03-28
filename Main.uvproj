@@ -308,7 +308,7 @@
             </OnChipMemories>
           </Target51Misc>
           <C51>
-            <RegisterColoring>0</RegisterColoring>
+            <RegisterColoring>1</RegisterColoring>
             <VariablesInOrder>0</VariablesInOrder>
             <IntegerPromotion>1</IntegerPromotion>
             <uAregs>0</uAregs>
@@ -324,7 +324,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath></IncludePath>
+              <IncludePath>C:\Program Files\Keil_v5\C51\INC</IncludePath>
             </VariousControls>
           </C51>
           <Ax51>
