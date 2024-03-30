@@ -381,16 +381,6 @@
               <FileType>1</FileType>
               <FilePath>.\src\main.c</FilePath>
             </File>
-            <File>
-              <FileName>interrupt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\interrupt\interrupt.c</FilePath>
-            </File>
-            <File>
-              <FileName>interrupt.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\interrupt\interrupt.h</FilePath>
-            </File>
           </Files>
         </Group>
       </Groups>
