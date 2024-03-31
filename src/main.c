@@ -8,6 +8,8 @@ sfr GPIO_1 = 0x90;
 sfr GPIO_2 = 0xA0;
 sfr GPIO_3 = 0xB0;
 
+sbit led = P2^0;
+
 /************中断实验*****************/
 #if 0
 // 中断回调函数
@@ -74,7 +76,7 @@ void ledTurnOn(void* param)
 /************中断实验END****************/
 #endif
 /*************串口收发实验*************************/
-#if 0
+#if 1
 static unsigned int g_time_count = 0; 
 // 初始化串口
 void uart_config()
@@ -92,21 +94,15 @@ void uart_config()
 }
 
 // 串口发送数据
-void sendStr(char* str)
+void uart_send(unsigned char buf)
 {
-    ES = 0;
-    while(*str != 0)
-    {
-        SBUF = *str;
-        while(TI==0);
-        TI=0;
-        str++;
-    }
-    ES=1;
+    SBUF = buf;
+    while(!TI);
+    TI = 0;
 }
 
 // 定时发送数据
-
+#if 0
 void sendDataOp()
 {
 	int i = 0;
@@ -125,6 +121,8 @@ void sendDataOp()
 	}
 }
 #endif
+
+#endif
 /*************************************/
 
 /*延时函数*/ 
@@ -138,14 +136,74 @@ void sleep(unsigned ms)
     }
 }
 
+/*重定向putchar() 用于串口log输出*/
+
+char putchar(char c)
+{
+    ES = 0;
+    SBUF = c;
+    while(TI==0);
+    TI = 0;
+    ES = 1;
+    return c;
+}
+
+/*******************系统时间*****************/
+typedef struct _TIME{
+    unsigned char hour;
+    unsigned char min;
+    unsigned char sec;
+    unsigned long total; 
+}Time;
+
+static Time colock = {0, 0, 0, 0};
+
+unsigned long initTime(unsigned h, unsigned m, unsigned s)
+{
+    colock.hour = h;
+    colock.min = m;
+    colock.sec = s;
+    colock.total = h * 60+ m * 60 + s;
+    return colock.total;
+}
+
+unsigned long updateTime()
+{
+    unsigned long time = colock.total;
+    colock.hour = time / (60 * 60);
+    colock.min = (time / 60) % 60;
+    colock.sec = time % 60;
+    return time;
+}
+/******************************/
+
+
+void uart_receive() interrupt 0
+{
+    unsigned char buf;
+    if(RI)
+    {
+        RI=0;
+        buf = SBUF;
+        printf("%s", buf);
+    }
+}
 
 //主程序入口
 void main()
 {
 	// T0_timerInit(500, ledTurnOn, NULL);
 	// sendDataOp();
+    initTime(0, 0, 0);
+    printf("%s, %s", __DATE__, __TIME__);
+    uart_config();
+    //uart_send();
     while(1)
     {
-        sleep(500);
+        //printf("cpu time is: %02bu:%02bu:%02bu", colock.hour, colock.min, colock.sec);
+        sleep(1000);
+        colock.total++;
+        updateTime();
+        led =~ led;
     }
 }
