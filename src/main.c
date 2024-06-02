@@ -1,209 +1,147 @@
-#include "reg51.h"
+#include "gpio.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "intrins.h" 
-/************引脚定义*****************/
-sfr GPIO_0 = 0x80;
-sfr GPIO_1 = 0x90;
-sfr GPIO_2 = 0xA0;
-sfr GPIO_3 = 0xB0;
+#include "intrins.h"
+#include "string.h"
+typedef int fun(int);
 
-sbit led = P2^0;
-
-/************中断实验*****************/
-#if 0
-// 中断回调函数
-typedef void (*intCallback)(void*);
-
-typedef void (*function)(void);
-
-// 中断函数参数结构
-typedef struct _intFunParam{
-	unsigned interval;
-	void* param;
-}intFunParam;
-
-// 中断计数
-unsigned char g_count = 0;
-// 中断函数指针
-intCallback g_inerrupt_func = NULL;
-intFunParam g_intFunParam = { 0, NULL };
-
-// 中断执行函数
-void ledTurnOn(void* param);
-
-// 中断初始化
-void T0_timerInit(unsigned interval, intCallback timerCallBack, void* callBackData);
-
-void T0_timerInit(unsigned interval, intCallback timerCallBack, void* callBackData)
+void setLed(int index)
 {
-	TMOD = 0x01;              //设置定时器0为工作方式1
-    TH0  = (65536-45872)/256;
-    TL0  = (65536-45872)%256; //装初值
-    EA   = 1;                 //开总中断
-    ET0  = 1;                 //开启定时器0中断
-    TR0  = 1;                 //启动定时器0
-	g_intFunParam.interval = interval;
-	g_intFunParam.param = callBackData;
-	g_inerrupt_func = timerCallBack;
+    LED=~LED;
 }
 
-// T0中断
-void T0_time() interrupt 1
+int regTimer(void* callback)
 {
-	// 50ms 进入一次
-	EA = 0;
-    TH0 = (65536-45872)/256;
-    TL0 = (65536-45872)%256; //进入中断程序说明计数计满，TL0，TH0归零，需要装初值
-	g_count++;
-	// 最小50ms为单位
-	if( (g_count*50 >= g_intFunParam.interval) && g_inerrupt_func )
-	{
-		g_count = 0;
-		g_inerrupt_func(g_intFunParam.param);
-	}
-	EA = 1;
-}
+    int count = 0;
+    fun *op = callback;
+    TMOD = 0x01;
+    TH0 = 0xB8;
+    TL0 = 0x00;
+    TR0 = 0x01;
 
-void ledTurnOn(void* param)
-{
-    if(param)
+    while(1)
     {
-       ((function)param)();
+        if(TF0 == 1)
+        {
+            TF0 = 0;
+            TH0 = 0xB8;
+            count++;
+            if(count == 50)
+            {
+                count = 0;
+                op(0);
+            }
+        }
     }
-    led = ~led;
-}
-/************中断实验END****************/
-#endif
-/*************串口收发实验*************************/
-#if 1
-static unsigned int g_time_count = 0; 
-// 初始化串口
-void uart_config()
-{
-    SCON = 0x50;
-    TMOD |= 0x21;
-    TMOD &= ~0x10;
-    TH1 = 0xFA;
-    TL1 = 0xFA;
-    PCON |= 0x80;
-    TR1 = 1;
-    TI = 0;
-    RI = 0;
-    ES = 1;
 }
 
-// 串口发送数据
-void uart_send(unsigned char buf)
-{
-    SBUF = buf;
-    while(!TI);
-    TI = 0;
-}
+sbit LCD_RS = P2^6;
+sbit LCD_RW = P2^5;
+sbit LCD_EN = P2^7;
 
-// 定时发送数据
-#if 0
-void sendDataOp()
-{
-	int i = 0;
-	char buf[64] = {0};
-	uart_config();
-	while(1)
-	{
-		i = 0;
-		while(i < 10000)
-		{
-			i++;
-		}
-		g_time_count++;
-		sprintf(buf, "This is No. %u", g_time_count);
-		sendStr(buf);
-	}
-}
-#endif
 
-#endif
-/*************************************/
-
-/*延时函数*/ 
-void sleep(unsigned ms)
+void DELAY_nMS(unsigned int time)
 {
     unsigned i = 0;
-    while(i < 1000*ms)
+    while (i < time * 1000)
     {
         _nop_();
         i++;
     }
 }
 
-/*重定向putchar() 用于串口log输出*/
-
-char putchar(char c)
+void wcode(unsigned char t)
 {
-    ES = 0;
-    SBUF = c;
-    while(TI==0);
-    TI = 0;
-    ES = 1;
-    return c;
+  LCD_RS=0;           // 写的是命令
+  LCD_RW=0;           // 写状态
+  LCD_EN=1;           // 使能
+  P0=t;               // 写入命令 
+  DELAY_nMS(2);       // 等待写入,如果时间太短，会导致液晶无法显示
+  LCD_EN=0;           // 数据的锁定
 }
 
-/*******************系统时间*****************/
-typedef struct _TIME{
-    unsigned char hour;
-    unsigned char min;
-    unsigned char sec;
-    unsigned long total; 
-}Time;
-
-static Time colock = {0, 0, 0, 0};
-
-unsigned long initTime(unsigned h, unsigned m, unsigned s)
+//向LCD写一数据
+void wdata(unsigned char t)
 {
-    colock.hour = h;
-    colock.min = m;
-    colock.sec = s;
-    colock.total = h * 60+ m * 60 + s;
-    return colock.total;
+  LCD_RS=1;             // 写的是数据
+  LCD_RW=0;             // 写状态
+  LCD_EN=1;             // 使能
+  P0=t;                 // 写入数据
+  DELAY_nMS(2);         // 等待写入,如果时间太短，会导致液晶无法显示
+  LCD_EN=0;             // 数据的锁定
 }
 
-unsigned long updateTime()
+//LCD设置坐标位置
+void LCD1602_SetArea(unsigned char X,unsigned char Y)
 {
-    unsigned long time = colock.total;
-    colock.hour = time / (60 * 60);
-    colock.min = (time / 60) % 60;
-    colock.sec = time % 60;
-    return time;
-}
-/******************************/
-
-
-void uart_receive() interrupt 0
-{
-    unsigned char buf;
-    if(RI)
+    if (X > 16 && Y < 1)
     {
-        RI=0;
-        buf = SBUF;
-        printf("%s", buf);
+        X = 0;Y = 1;
+    }
+    if(Y > 1)
+        Y = 0;
+    if(X >= 16 && Y > 1)
+    {
+        X =0; Y = 0;
+    }
+    switch(Y)
+    {
+        case 0: wcode(0x80 + X); break;
+        case 1: wcode(0xC0 + X); break;
+        default:break;
+    }
+}
+
+//LCD显示字符
+void LCD1602_ShowChar(unsigned char X,unsigned char Y,unsigned char Char)
+{
+    LCD1602_SetArea(X,Y);                           // 设置显示坐标
+    wdata(Char);                        // 显示指定字符
+}
+
+//LCD显示字符串
+void LCD1602_ShowString(unsigned char X,unsigned char Y,unsigned char *String)
+{
+    LCD1602_SetArea(X,Y);                           // 设置显示坐标
+    while(*String)
+    {
+        wdata(*String);
+        String++;
+    }
+}
+
+//LCD初始化
+void InitLCD()
+{  		 
+   wcode(0x01);	  //清屏
+   wcode(0x06);   //输入方式控制,增量光标不移位
+   wcode(0x0e);   //显示开关控制
+   wcode(0x38);   //功能设定:设置16x2显示，5x7显示,8位数据接口     	
+}
+
+void displayMain()
+{
+    int i = 0;
+    int x = 0, y =0;
+    char* temp = "Hello world!";
+    int len = strlen(temp);
+    InitLCD();
+    while(i < len)
+    {
+        LCD1602_ShowChar(x, y, temp[i]);
+        i++;
+        x++;
     }
 }
 
 //主程序入口
 void main()
 {
-	// T0_timerInit(500, ledTurnOn, NULL);
-	// sendDataOp();
-    initTime(0, 0, 0);
-    printf("%s, %s", __DATE__, __TIME__);
-    uart_config();
-    //uart_send();
-    while(1)
-    {
-        //printf("cpu time is: %02bu:%02bu:%02bu", colock.hour, colock.min, colock.sec);
-        sleep(1000);
-        colock.total++;
-        updateTime();
-        led =~ led;
-    }
+	int i = 0, j = 0;;
+	//displayMain();
+	while(1)
+	{
+		LED = 0x03;
+	}
+    while(1);
 }
