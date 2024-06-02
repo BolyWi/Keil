@@ -381,6 +381,21 @@
               <FileType>1</FileType>
               <FilePath>.\src\main.c</FilePath>
             </File>
+            <File>
+              <FileName>common.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\common.c</FilePath>
+            </File>
+            <File>
+              <FileName>interrupt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\interrupt.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\uart.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
