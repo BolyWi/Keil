@@ -396,6 +396,11 @@
               <FileType>1</FileType>
               <FilePath>.\src\uart.c</FilePath>
             </File>
+            <File>
+              <FileName>display.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\display.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
