@@ -1,5 +1,10 @@
 #include "common.h"
 
+S_TIME* get_sys_time()
+{
+	return &colock;
+}
+
 unsigned long initTime(unsigned h, unsigned m, unsigned s)
 {
     colock.hour = h;
@@ -11,19 +16,40 @@ unsigned long initTime(unsigned h, unsigned m, unsigned s)
 
 unsigned long updateTime()
 {
-    unsigned long time = colock.total;
+    unsigned long time = 0;
+	time = ++colock.total;
     colock.hour = time / (60 * 60);
     colock.min = (time / 60) % 60;
     colock.sec = time % 60;
     return time;
 }
 
-void sleep(unsigned ms)
+void delay_us(unsigned us)
+{
+	unsigned i = 0;
+	while(i < us)
+	{
+		i++;
+		_nop_();
+	}
+}
+
+void delay_ms(unsigned ms)
 {
     unsigned i = 0;
-    while(i < 1000*ms)
+    while(i < ms)
     {
-        _nop_();
         i++;
+        delay_us(65);
+    }
+}
+
+void delay_s(unsigned s)
+{
+    unsigned i = 0;
+    while(i < s)
+    {        
+		i++;
+        delay_ms(1000);
     }
 }
