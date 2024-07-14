@@ -77,7 +77,7 @@ void WriteShortValue(WORD addr, unsigned dat)
 	xdata BYTE buf = dat >> 8;
 	IapEraseSector(addr);
 	IapProgramByte(addr, buf);
-	buf = dat & 0x0f;
+	buf = dat & 0xff;
 	IapProgramByte(addr+1, buf);
 }
 

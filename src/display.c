@@ -2,9 +2,6 @@
 
 xdata char s_date[32] = {0};
 xdata char s_time[32] = {0};
-xdata char hello_info[] ={
-	"Hello, C51!",
-};
 
 void lcd_init()
 {
@@ -118,6 +115,7 @@ void run_display_time()
 		}
 
 		lcd_show_string(s_time, 16);
-		delay_s(1);
+		
+		delay_ms(500);
 	}
 }
