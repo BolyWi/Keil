@@ -1,3 +1,4 @@
+#if 0
 #include "interrupt.h"
 #include "gpio.h"
 
@@ -41,3 +42,4 @@ void ledTurnOn(void* param)
     }
     LED = ~LED;
 }
+#endif

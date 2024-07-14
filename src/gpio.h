@@ -20,4 +20,27 @@ sbit LED_7 = P2^7;
 
 sfr LED = 0xA0;
 
+/**********DS1302 IO定义************/
+sbit DSIO = P3^4;
+sbit RST  = P3^5;
+sbit SCLK = P3^6;
+
+sbit LSA = P2^2;
+sbit LSB = P2^3;
+sbit LSC = P2^4;
+
+
+/**********LCD1602 IO定义*************/
+sbit LCD_RS = P2^6;
+sbit LCD_RW = P2^5;
+sbit LCD_EN = P2^7;
+sfr  LCD_DATA = 0x80;
+
+/************EEPROM读写 IO定义********/
+sfr IAP_DATA = 0xE2;
+sfr IAP_ADDRH = 0xE3;
+sfr IAP_ADDRL = 0xE4;
+sfr IAP_CMD = 0xE5;
+sfr IAP_TRIG = 0xE6;
+sfr IAP_CONTR = 0xE7;
 #endif // __GPIO_H__

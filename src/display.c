@@ -1,5 +1,11 @@
 #include "display.h"
 
+xdata char s_date[32] = {0};
+xdata char s_time[32] = {0};
+xdata char hello_info[] ={
+	"Hello, C51!",
+};
+
 void lcd_init()
 {
     lcd_write_commond(0x01);
@@ -59,7 +65,6 @@ void lcd_show_string(U8 *content, U8 start_pos)
 	unsigned i = 0;
 	unsigned len = 0;
 	U8 x = 0, y = 0;
-	//lcd_write_commond(0x01);
 	len = strlen(content);
 	if(len == 0)
 		return;
@@ -88,5 +93,31 @@ void lcd_show_string(U8 *content, U8 start_pos)
 				lcd_write_commond(0x01);
 			}
 		}
+	}
+}
+
+
+void run_display_time()
+{
+	S_TIME *now_time = NULL;
+	unsigned char old_date = 0;
+	lcd_init();
+	Ds1302Init();
+
+	while (1)
+	{
+		Ds1302ReadTime();
+		now_time = get_sys_time();
+		sprintf(s_date, "Date:20%02d-%02d-%02d", (int)now_time->year, (int)now_time->month, (int)now_time->day);
+		sprintf(s_time, "Time:%02d:%02d:%02d %d", (int)now_time->hour, (int)now_time->min, (int)now_time->sec, (int)now_time->week);
+
+		if(old_date != now_time->day)
+		{
+			lcd_show_string(s_date, 0);
+			old_date = now_time->day;
+		}
+
+		lcd_show_string(s_time, 16);
+		delay_s(1);
 	}
 }
