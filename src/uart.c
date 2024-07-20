@@ -1,4 +1,7 @@
+#include "common.h"
 #include "uart.h"
+
+#if ENABLE_UART_MOUDLE
 void uart_config()
 {
     SCON = 0x50;
@@ -29,3 +32,4 @@ char putchar(char c)
     ES = 1;
     return c;
 }
+#endif

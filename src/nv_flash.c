@@ -1,8 +1,7 @@
-#include <intrins.h>
-#include <stdio.h>
-#include "gpio.h"
+#include "common.h"
 #include "nv_flash.h"
-#include "display.h"
+
+#if ENABLE_NV_FALSH_MOUDLE
 
 void IapIdle()
 {
@@ -66,7 +65,7 @@ void WriteByte(WORD addr, BYTE dat)
 
 unsigned ReadShortValue(WORD addr)
 {
-	xdata unsigned buf = 0;
+	unsigned buf = 0;
 	buf = IapReadByte(addr);
 	buf = buf << 8 | IapReadByte(addr+1);
 	return buf;
@@ -74,7 +73,7 @@ unsigned ReadShortValue(WORD addr)
 
 void WriteShortValue(WORD addr, unsigned dat)
 {
-	xdata BYTE buf = dat >> 8;
+	BYTE buf = dat >> 8;
 	IapEraseSector(addr);
 	IapProgramByte(addr, buf);
 	buf = dat & 0xff;
@@ -83,7 +82,7 @@ void WriteShortValue(WORD addr, unsigned dat)
 
 void WriteRecord(WORD addr, BYTE size, BYTE *dat)
 {
-	xdata i = 0;
+	int i = 0;
 	IapEraseSector(addr);
 	while (i < size)
 	{
@@ -94,10 +93,11 @@ void WriteRecord(WORD addr, BYTE size, BYTE *dat)
 
 void ReadRecord(WORD addr, BYTE size, BYTE *dat)
 {
-	xdata BYTE i = 0;
+	int i = 0;
 	while (i < size)
 	{
 		dat[i] = IapReadByte(addr+i);
 		i++;
 	}
 }
+#endif

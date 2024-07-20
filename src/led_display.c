@@ -1,5 +1,7 @@
-#include "gpio.h"
 #include "common.h"
+#include "led_display.h"
+
+#if ENABLE_LED_MOUDLE
 
 enum{
     LED_DEMO_0,
@@ -17,13 +19,13 @@ void turn_one_led()
     while(1)
     {
         LED_0 =~LED_0;
-        sleep(1000*1);
+        delay_ms(1000*1);
         LED_1 =~LED_1;
-        sleep(1000*1);
+        delay_ms(1000*1);
         LED_2 =~LED_2;
-        sleep(1000*1);
+        delay_ms(1000*1);
         LED_3 =~LED_3;
-        sleep(1000*1);
+        delay_ms(1000*1);
     }
 }
 
@@ -40,3 +42,4 @@ void run_led_demo(unsigned index)
         break;
     }
 }
+#endif

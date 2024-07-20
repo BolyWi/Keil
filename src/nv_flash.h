@@ -1,5 +1,7 @@
 #ifndef __NV_FLASH_H__
 #define __NV_FLASH_H__
+#include <intrins.h>
+#include <stdio.h>
 
 #define CMD_READ    1
 #define CMD_PROGRAM 2

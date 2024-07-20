@@ -1,6 +1,12 @@
-#if 0
+#include "common.h"
 #include "interrupt.h"
-#include "gpio.h"
+
+#if ENABLE_INTERRUPY_MOUDLE
+// 中断计数
+unsigned char g_count = 0;
+// 中断函数指针
+intCallback g_inerrupt_func = NULL;
+intFunParam g_intFunParam = { 0, NULL };
 
 void T0_timerInit(unsigned interval, intCallback timerCallBack, void* callBackData)
 {
@@ -16,7 +22,6 @@ void T0_timerInit(unsigned interval, intCallback timerCallBack, void* callBackDa
 }
 
 // T0中断
-#if 0
 void T0_time() interrupt 1
 {
 	// 50ms 进入一次
@@ -32,7 +37,6 @@ void T0_time() interrupt 1
 	}
 	EA = 1;
 }
-#endif
 
 void ledTurnOn(void* param)
 {

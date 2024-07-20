@@ -1,6 +1,6 @@
 #ifndef __GPIO_H__
 #define __GPIO_H__
-#include "REG52.H"
+#include <REG52.H>
 
 /************IO引脚定义*****************/
 sfr GPIO_0 = 0x80;
@@ -43,4 +43,10 @@ sfr IAP_ADDRL = 0xE4;
 sfr IAP_CMD = 0xE5;
 sfr IAP_TRIG = 0xE6;
 sfr IAP_CONTR = 0xE7;
+
+/***************蜂鸣器 IO定义*********/
+sbit BEEP = P1^5;
+
+/***************DS18B20 IO定义*********/
+sbit DSPORT = P3^7;
 #endif // __GPIO_H__
