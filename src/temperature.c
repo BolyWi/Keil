@@ -1,6 +1,6 @@
 #include "common.h"
 #include "temperature.h"
-
+#if ENABLE_TEMPERATURE_MOUDLE
 void Delay1ms(unsigned y)
 {
     unsigned x;
@@ -94,3 +94,6 @@ float get_temperature()
     temp = Ds18b20ReadTemp()*0.0625;
     return temp;
 }
+
+#endif
+
