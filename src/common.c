@@ -10,6 +10,12 @@ void delay_us(unsigned us)
     }
 }
 
+#if ENABLE_RTXOS_MOUDLE
+void delay_ms(unsigned ms)
+{
+    os_wait(K_IVL, ms, 0);
+}
+#else
 void delay_ms(unsigned ms)
 {
     unsigned i = 0;
@@ -19,3 +25,4 @@ void delay_ms(unsigned ms)
         delay_us(65);
     }
 }
+#endif
