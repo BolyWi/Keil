@@ -49,4 +49,10 @@ sbit BEEP = P1^5;
 
 /***************DS18B20 IO定义*********/
 sbit DSPORT = P3^7;
+
+/**************按键IO定义*************/
+sbit KEY_1 = P3^1;
+sbit KEY_2 = P3^2;
+sbit KEY_3 = P3^3;
+sbit KEY_4 = P3^4;
 #endif // __GPIO_H__
