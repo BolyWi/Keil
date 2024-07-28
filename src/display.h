@@ -18,4 +18,6 @@ void lcd_show_string(U8 *content, U8 start_pos);
 
 void run_display_time();
 void run_display_temp();
+void run_display_uart_info();
+
 #endif //_DISPLAY_H_

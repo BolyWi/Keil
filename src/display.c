@@ -1,6 +1,7 @@
 #include "display.h"
 #include "common.h"
 #include "clock.h"
+#include "uart.h"
 
 #if ENABLE_LCD_MOUDLE
 
@@ -60,49 +61,51 @@ void lcd_show_string(U8 *content, U8 start_pos)
 {
     U8 i = 0;
     U8 len = 0;
-    U8 x = 0, y = 0;
+    U8 pos = 0;
     len = strlen(content);
     if(len == 0)
         return;
     if( 0 < start_pos && start_pos < MAX_CHAR_NUM - 1)
     {
-        x = start_pos % 16;
-        y = start_pos / 16;
+        pos = start_pos;
     }
-    while(i < len)
+
+    while(*content != '\0')
     {
-        lcd_show_char(*content, x, y);
-        content++;
-        i++;
-        // change line ?
-        if(x < MAX_CHAR_COL - 1)
-            x++;
-        else
+        lcd_show_char(*content, pos % 16, pos / 16);
+        pos++;
+        if(pos > MAX_CHAR_NUM)
         {
-            x = 0;
-            // change page ?
-            if( y < MAX_CHAR_ROW - 1)
-                y++;
-            else
-            {
-                y = 0;
-                lcd_write_commond(0x01);
-            }
+            pos = 0;
+            lcd_write_commond(0x01);
         }
+        content++;
     }
 }
 
+#if ENABLE_UART_MOUDLE
+void run_display_uart_info()
+{
+    char display_buf[128] = { 0 };
+    int len = sizeof(display_buf);
+    memset(display_buf, 0, len);
+    get_uart_info(display_buf, len);
+    if(strlen(display_buf) > 0)
+    {
+        lcd_write_commond(0x01);
+        lcd_show_string(display_buf, 0);
+    }
+}
+#endif
+
+#if ENABLE_TEMPERATURE_MOUDLE
 void run_display_temp()
 {
     char buf[16] = { 0 };
-    lcd_init();
-    while(1)
-    {
-        sprintf(buf, "temp: %0.3f %cC", get_temperature(), 0xdf);
-        lcd_show_string(buf, 0);
-    }
-
+    sprintf(buf, "temp: %0.3f %cC", get_temperature(), 0xdf);
+    lcd_show_string(buf, 0);
 }
+#endif
 
 #if ENABLE_CLOCK_MOUDLE
 void run_display_time()
@@ -122,5 +125,6 @@ void run_display_time()
     }
 }
 #endif
+
 
 #endif
