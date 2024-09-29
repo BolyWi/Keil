@@ -102,8 +102,14 @@ void run_display_uart_info()
 void run_display_temp()
 {
     char buf[16] = { 0 };
-    sprintf(buf, "temp: %0.3f %cC", get_temperature(), 0xdf);
-    lcd_show_string(buf, 0);
+    lcd_init();
+    while(1)
+    {
+        sprintf(buf, "temp: %0.3f %cC", get_temperature(), 0xdf);
+        lcd_show_string(buf, 0);
+        delay_ms(100);
+    }
+
 }
 #endif
 
@@ -126,5 +132,20 @@ void run_display_time()
 }
 #endif
 
+#if ENABLE_DHT11_MOUDLE
+void run_display_DTH11()
+{
+    //lcd_init();
+    char buf[32] = { 0 };
+
+    while(1)
+    {
+        //sprintf(buf, "%s", get_DHT11_data());
+        //lcd_show_string(buf, 0);
+        printf("hello world\r\n");
+        delay_ms(500);
+    }
+}
+#endif
 
 #endif

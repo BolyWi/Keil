@@ -1,28 +1,35 @@
 #include "common.h"
 
+// delay function define
+
 void delay_us(unsigned us)
 {
-    unsigned i = 0;
-    while (i < us)
+    while(us!=0)
     {
-        i++;
-        _nop_();
+        us--;
     }
 }
 
-#if ENABLE_RTXOS_MOUDLE
-void delay_ms(unsigned ms)
+void delay_10us()
 {
-    os_wait(K_IVL, ms, 0);
+    _nop_();_nop_();
+    _nop_();_nop_();_nop_();
 }
-#else
+
 void delay_ms(unsigned ms)
 {
-    unsigned i = 0;
-    while (i < ms)
+    while(ms!=0)
     {
-        i++;
-        delay_us(65);
+        delay_us(112);
+        ms--;
     }
 }
-#endif
+
+void delay_sec(unsigned sec)
+{
+    while(sec!=0)
+    {
+        delay_ms(1000);
+        sec--;
+    }
+}

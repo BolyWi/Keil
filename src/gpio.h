@@ -50,9 +50,23 @@ sbit BEEP = P1^5;
 /***************DS18B20 IO定义*********/
 sbit DSPORT = P3^7;
 
+/********DHT11 IO定义******************/
+sbit DHT11 = P1^0;
+
 /**************按键IO定义*************/
 sbit KEY_1 = P3^1;
 sbit KEY_2 = P3^2;
 sbit KEY_3 = P3^3;
 sbit KEY_4 = P3^4;
+
+/***********TFT st7735s spi IO定义*****/
+sbit TFT_SCL = P1^0;
+sbit TFT_SDA = P1^1;
+sbit TFT_RST = P1^2;
+sbit TFT_DC  = P1^3;
+sbit TFT_CS  = P1^4;
+sbit TFT_BK  = P1^5;
+sbit TFT_K4  = P1^6;
+
+sbit TOUCH_KEY = P1^7;
 #endif // __GPIO_H__

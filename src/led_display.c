@@ -13,6 +13,24 @@ void led_init(unsigned char status)
 	LED = status;
 }
 
+void enableLED(unsigned index)
+{
+    LED &= ~(0x01 << index);
+}
+
+void disableLED(unsigned index)
+{
+   LED |= 0x01 << index;
+}
+
+void turnLED(unsigned num)
+{
+    int i;
+    LED = 0xFF;
+    for(i = 0; i < num; i++)
+        enableLED(i);
+}
+
 void turn_one_led()
 {
     led_init(0xf0);
