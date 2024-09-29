@@ -421,6 +421,16 @@
               <FileType>1</FileType>
               <FilePath>.\src\temperature.c</FilePath>
             </File>
+            <File>
+              <FileName>dht11.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\dht11.c</FilePath>
+            </File>
+            <File>
+              <FileName>st7735s.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\st7735s.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
