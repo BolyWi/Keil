@@ -19,9 +19,15 @@
 #define LED_ON   0
 #define LED_OFF  1
 
-#define OSC_FREQUENCY 11059200UL    // Hz
-#define OS_TICK 1*1000*5            // us 5ms
-#define OS_TIMER0_INIT_VALUE  (65536-(OS_TICK*OSC_FREQUENCY/12)/(1000*1000)) // timer init value
+//#define OSC_FREQUENCY 11059200UL    // Hz
+//#define OS_TICK 1*1000*5            // us 5ms
+//#define OS_TIMER0_INIT_VALUE  (65536-(OS_TICK*OSC_FREQUENCY/12)/(1000*1000)) // timer init value
+
+#define OSC_CLK_FREQUENCY       11059200UL                  // Hz
+#define OSC_MC_FREQUENCY        (OSC_CLK_FREQUENCY/12)
+#define OS_TICK                 5*1000E-6L                  // s
+#define OSC_MC_TCOUNT     		(OS_TICK*OSC_MC_FREQUENCY)
+#define OS_TIMER0_INIT_VALUE    (65536-OSC_MC_TCOUNT)
 
 enum{
     LED_DEMO_TASK = 1,
