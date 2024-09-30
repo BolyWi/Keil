@@ -19,13 +19,17 @@
 #define LED_ON   0
 #define LED_OFF  1
 
+#define OSC_FREQUENCY 11059200UL    // Hz
+#define OS_TICK 1*1000*5            // us 5ms
+#define OS_TIMER0_INIT_VALUE  (65536-(OS_TICK*OSC_FREQUENCY/12)/(1000*1000)) // timer init value
+
 enum{
     LED_DEMO_TASK = 1,
     TEMP_DEMO_TASK,
     UART_DEMO_TASK,
 };
 
-/*ÑÓÊ±º¯Êý*/ 
+
 void delay_10us();
 void delay_us(unsigned us);
 void delay_ms(unsigned ms);
