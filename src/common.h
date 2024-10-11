@@ -23,6 +23,7 @@
 //#define OS_TICK 1*1000*5            // us 5ms
 //#define OS_TIMER0_INIT_VALUE  (65536-(OS_TICK*OSC_FREQUENCY/12)/(1000*1000)) // timer init value
 
+#define OS_MIN_TICK_MS          5
 #define OSC_CLK_FREQUENCY       11059200UL                  // Hz
 #define OSC_MC_FREQUENCY        (OSC_CLK_FREQUENCY/12)
 #define OS_TICK                 5*1000E-6L                  // s
@@ -35,9 +36,17 @@ enum{
     UART_DEMO_TASK,
 };
 
+enum{
+    TIMER_SINGLE = 0,
+    TIMER_NO_PAUSE,
+};
+
+typedef void (*timer_callback)(void* timer);
 
 void delay_10us();
 void delay_us(unsigned us);
 void delay_ms(unsigned ms);
 void delay_sec(unsigned sec);
+void register_timer(unsigned ticks, bit bLoop, timer_callback timer_cb, void* timer_param);
+void remove_timer();
 #endif // __COMMON_H__
