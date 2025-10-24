@@ -38,6 +38,13 @@
 - SPI
 - IIC
 
+### UART串口通信
+> 串口通信接口： TXD RXD GND  
+> RS232接口：DCD RXD TXD DTR SG DSR RTS CTS RI  
+> 单工、半双工、全双工  
+![UART通信示意图](res/img/UART通信示意图.png)
+
+![串口数据发送示意图](res/img/串口数据发送示意图.png)
 ## 按键
 
 ![独立按键](res/img/独立按键.png "独立按键")  
